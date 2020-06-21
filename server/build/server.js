@@ -7,8 +7,10 @@ const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
+const config_1 = __importDefault(require("./config/config"));
 const indexRoutes_1 = __importDefault(require("./routes/indexRoutes"));
 const ProductRoutes_1 = __importDefault(require("./routes/ProductRoutes"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 class Server {
     constructor() {
         this.app = express_1.default();
@@ -16,10 +18,10 @@ class Server {
         this.routes();
     }
     config() {
-        const MONGO_URI = "mongodb://localhost/test";
-        mongoose_1.default.set("useFindAndModify", true);
+        //const MONGO_URI = "mongodb://localhost/test";
+        //mongoose.set("useFindAndModify", true);
         mongoose_1.default
-            .connect(MONGO_URI || process.env.MONGODB_URL, {
+            .connect(config_1.default.DB.URI, {
             useNewUrlParser: true,
             useCreateIndex: true,
             useUnifiedTopology: true,
@@ -35,6 +37,7 @@ class Server {
     routes() {
         this.app.use(indexRoutes_1.default);
         this.app.use("/api/products", ProductRoutes_1.default);
+        this.app.use(authRoutes_1.default);
     }
     start() {
         this.app.listen(this.app.get("port"), () => {

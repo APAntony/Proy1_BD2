@@ -3,8 +3,10 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import cors from "cors";
 
+import config from './config/config';
 import indexRoutes from "./routes/indexRoutes";
 import ProductRoutes from "./routes/ProductRoutes";
+import authRoutes from './routes/authRoutes'
 
 class Server {
     public app: express.Application;
@@ -15,10 +17,10 @@ class Server {
     }
 
     config() {
-        const MONGO_URI = "mongodb://localhost/test";
-        mongoose.set("useFindAndModify", true);
+        //const MONGO_URI = "mongodb://localhost/test";
+        //mongoose.set("useFindAndModify", true);
         mongoose
-            .connect(MONGO_URI || process.env.MONGODB_URL, {
+            .connect(config.DB.URI , {
                 useNewUrlParser: true,
                 useCreateIndex: true,
                 useUnifiedTopology: true,
@@ -35,6 +37,7 @@ class Server {
     routes() {
         this.app.use(indexRoutes);
         this.app.use("/api/products", ProductRoutes);
+        this.app.use(authRoutes);
     }
 
     start() {
